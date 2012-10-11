@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# This script convert an export version of an ipython notebook into a rst file 
+# which can be exploited in sphinx documentation 
+#
+# Author B.Uguen IETR Université de Rennes 1 
+#
+cat $1 | sed 's/^\([^#]\)\(.*\)/    In [1]: \1\2\n/' > tmp.rst
+cat tmp.rst | sed 's/# <codecell>/.. ipython::/' > pmt.rst
+cat pmt.rst | sed 's/# <markdowncell>//' > tmp.rst
+cat tmp.rst | sed 's/\$\$\(.*\)\$\$/.. math::\n\n \1\n /' > pmt.rst
+cat pmt.rst | sed 's/\$\(.*\)\$/ :math:`\1` /' > tmp.rst
+cat tmp.rst | sed 's/^# *\(.*\)/\1/'  > pmt.rst
+mv pmt.rst $1{1%.py}.rst
